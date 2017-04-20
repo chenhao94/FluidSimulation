@@ -1,21 +1,30 @@
 #include "grid.hpp"
+#include "particle.hpp"
 #include <cmath>
+#include <cstring>
 #include <algorithm>
 
 using namespace std;
 
 constexpr auto g = 9.8;
 
+Grid::Grid(int _d, int _w, float cell, float _r) : d(_d), w(_w), r(_r), cellsize(cell)
+{
+    g = new GridCell[d * w];
+    Particle::xbound = cellsize * d;
+    Particle::ybound = cellsize * w;
+}
+
 void Grid::reset()
 {
     t = 0;
-    for (int i = 0; i < d * w; ++i)
-        g[i] = GridCell(ra);
+    memset(g, 0, d * w * sizeof(GridCell));
 }
 
 void Grid::addFluid(int x, int y)
 {
-    g[getIndex(x, y)].r = rf;
+    g[getIndex(x, y)].fluid = true;
+    // TODO: add marker particles
 }
 
 float Grid::step(float * buf)

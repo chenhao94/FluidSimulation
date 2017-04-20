@@ -2,9 +2,8 @@
 
 struct GridCell
 {
-    float ux, uy, vx, vy, px, py, r;
-
-    GridCell(float ra = 0.0) : r(ra) {}
+    float ux, uy, vx, vy, px, py;
+    bool fluid;
 };
 
 
@@ -12,10 +11,7 @@ class Grid
 {
     public:
 
-        Grid(int _d, int _w, float _rf = 1000.0, float _ra = 1.225 ) : d(_d), w(_w), rf(_rf), ra(_ra)
-        {
-            g = new GridCell[d * w];
-        }
+        Grid(int _d, int _w, float cell, float _r = 1000.0);
 
         ~Grid() { delete[] g; }
 
@@ -27,6 +23,7 @@ class Grid
 
         void reset();
         void addFluid(int x, int y);
+        void markFluid(int x, int y) { g[getIndex(x, y)].fluid = true; }
 
         // return the new timestamp, put the density info in `buf`
         float step(float *buf);
@@ -36,7 +33,7 @@ class Grid
     private:
 
         int d, w;
-        float rf, ra;
+        float r;
         float t, cellsize;
 
         GridCell *g;
