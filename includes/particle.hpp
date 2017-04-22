@@ -7,7 +7,9 @@ class Particle
 
     public:
 
-    void updatePos(GridCell &cell, float dt, Grid & g);
+    Particle(float _x = 0.0, float _y = 0.0) : x(_x), y(_y) {}
+
+    void updatePos(float dt, Grid & g);
 
     static float xbound, ybound;
 };
