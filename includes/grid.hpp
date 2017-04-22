@@ -1,4 +1,7 @@
 #pragma once
+#include <vector>
+
+class Particle;
 
 struct GridCell
 {
@@ -11,7 +14,7 @@ class Grid
 {
     public:
 
-        Grid(int _d, int _w, float cell, float _r = 1000.0);
+        Grid(int _d, int _w, float cell, float _r = 1000.0, int _p = 3);
 
         ~Grid() { delete[] g; }
 
@@ -32,10 +35,11 @@ class Grid
 
     private:
 
-        int d, w;
+        int d, w, particleNum; // d - depth, w - width, including bounds
         float r;
         float t, cellsize;
 
         GridCell *g;
+        std::vector<Particle> p;
 };
 
