@@ -3,14 +3,17 @@
 #include <cmath>
 #include <cstring>
 #include <algorithm>
+#include <Eigen/IterativeLinearSolvers>
 
 using namespace std;
 
 constexpr auto g = 9.8;
+vector<int> Grid::fluidCells;
+
 
 Grid::Grid(int _d, int _w, float cell, float _r) : d(_d), w(_w), r(_r), cellsize(cell)
 {
-    g = new GridCell[d * w];
+    g.resize(d * w);
     Particle::xbound = cellsize * d;
     Particle::ybound = cellsize * w;
 }
@@ -18,13 +21,20 @@ Grid::Grid(int _d, int _w, float cell, float _r) : d(_d), w(_w), r(_r), cellsize
 void Grid::reset()
 {
     t = 0;
-    memset(g, 0, d * w * sizeof(GridCell));
+    g.fill(g.begin(), g.end(), GridCell());
 }
 
 void Grid::addFluid(int x, int y)
 {
-    g[getIndex(x, y)].fluid = true;
+    markFluid(x, y);
     // TODO: add marker particles
+}
+
+inline void Grid::markFluid(int x, int y)
+{
+    int pos = getIndex(x, y);
+    fluidCells.push_back(pos);
+    g[pos].tid = fluidCells.size() - 1;
 }
 
 float Grid::step(float * buf)
@@ -38,6 +48,10 @@ float Grid::step(float * buf)
         dt = h / vmax;
 
     // update velocity
+    // update particles and fluid grids
+    for (auto &c : g)
+        c.tid = -1;
+    for (auto &)
     // update pressure
 
     t += dt;

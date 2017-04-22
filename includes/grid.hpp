@@ -1,9 +1,10 @@
 #pragma once
+#include <vector>
 
 struct GridCell
 {
     float ux, uy, vx, vy, px, py;
-    bool fluid;
+    int tid;
 };
 
 
@@ -13,8 +14,6 @@ class Grid
 
         Grid(int _d, int _w, float cell, float _r = 1000.0);
 
-        ~Grid() { delete[] g; }
-
         int getD() const { return d; }
         int getW() const { return w; }
         float getCellSize() const { return cellsize; }
@@ -23,7 +22,7 @@ class Grid
 
         void reset();
         void addFluid(int x, int y);
-        void markFluid(int x, int y) { g[getIndex(x, y)].fluid = true; }
+        void markFluid(int x, int y); { g[getIndex(x, y)].fluid = true; }
 
         // return the new timestamp, put the density info in `buf`
         float step(float *buf);
@@ -36,6 +35,8 @@ class Grid
         float r;
         float t, cellsize;
 
-        GridCell *g;
+        std::vector<GridCell> g;
+
+        static std::vector<int> fluidCells;
 };
 
