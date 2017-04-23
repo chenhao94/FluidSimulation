@@ -3,12 +3,13 @@
 #include "draw.hpp"
 #include <FL/Fl.H>
 #include <GL/glut.h>
+#include <cmath>
 
 #include <iostream>
 
 static unsigned cellPixelSize = 30;
 
-GridView::GridView(int d, int w, float cellsize, float dt) : Fl_Gl_Window(w * cellPixelSize, d * cellPixelSize), Grid(d, w, cellsize)
+GridView::GridView(int d, int w, float cellsize, float _dt) : Fl_Gl_Window(w * cellPixelSize, d * cellPixelSize), Grid(d, w, cellsize), dt(_dt)
 {
     Fl::add_timeout(0.5, timer_cb, (void*)this);
 }
@@ -35,6 +36,13 @@ int GridView::handle(int event)
 
 void GridView::draw()
 {
+    using namespace std;
+    auto nextT = 1. * ceil(t / dt) * dt;
+    //while (step() < nextT);
+    step();
+    if (t - nextT < 5e-4)
+        t += 5e-4;
+
     glClear(GL_COLOR_BUFFER_BIT);
  
     for (int i = 0; i < D; ++i)

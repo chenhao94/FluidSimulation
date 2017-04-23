@@ -106,7 +106,7 @@ float Grid::step()
     typedef Eigen::SparseMatrix<float, Eigen::RowMajor> MatType;
     MatType A(fluidCells.size(), fluidCells.size());
     typedef Eigen::VectorXf VecType;
-    VecType b, x;
+    VecType b(fluidCells.size()), x;
 
     for (int i = 0; i < D - 1; ++i)
         for (int j = 0; j < W - 1; ++j)

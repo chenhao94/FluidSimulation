@@ -12,5 +12,6 @@ class GridView : public Fl_Gl_Window, public Grid
         virtual void draw() override;
 
     private:
+        float dt;
         static void timer_cb(void *userdata);
 };
