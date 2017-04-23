@@ -1,7 +1,10 @@
-#include "grid.hpp"
-#include "particle.hpp"
+#include <FL/Fl.H>
+#include <GL/glut.h>
+#include "gridview.hpp"
 
 int main()
 {
-    return 0;
+    GridView view(20, 20, 0.01, 0.5);
+    view.show();
+    return (Fl::run());
 }

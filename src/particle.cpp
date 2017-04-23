@@ -1,3 +1,4 @@
+#include "grid.hpp"
 #include "particle.hpp"
 #include "cmath"
 

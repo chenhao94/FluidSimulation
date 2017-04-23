@@ -1,7 +1,8 @@
 #pragma once
-#include "grid.hpp"
 
-class Particle
+class Grid;
+
+struct Particle
 {
     float x, y;
 

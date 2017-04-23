@@ -1,12 +1,13 @@
 #pragma once
 #include <vector>
-
-class Particle;
+#include "particle.hpp"
 
 struct GridCell
 {
     float ux, uy, vx, vy, p;
     int tid;
+
+    GridCell() : tid(-1) {}
 };
 
 
@@ -16,8 +17,8 @@ class Grid
 
         Grid(int _d, int _w, float cell, float _r = 1000.0, int _p = 2);
 
-        int getD() const { return d; }
-        int getW() const { return w; }
+        int getD() const { return D; }
+        int getW() const { return W; }
         float getCellSize() const { return cellsize; }
         const GridCell& getGridCell(int pos) const { return gc[pos];  }
         const GridCell& getGridCell(int x, int y) const { return getGridCell(getIndex(x, y)); }
@@ -25,17 +26,20 @@ class Grid
         void reset();
         void addFluid(int x, int y);
         void markFluid(int x, int y); 
+        bool isFluid(int x, int y) const { return gc[getIndex(x, y)].tid >= 0; }
 
         // return the new timestamp, put the density info in `buf`
-        float step(float *buf);
+        float step();
 
-        int getIndex(int x, int y) const { return x * w + y; }
+        int getIndex(int x, int y) const { return x * W + y; }
         int getDivergence(int pos) const;
         int getDivergence(int x, int y) const { return getDivergence(getIndex(x ,y)); };
 
-    private:
+        const std::vector<Particle>& getParticles() const { return p; }
 
-        int d, w, particleNum; // d - depth, w - width, including bounds
+    protected:
+
+        int D, W, particleNum; // d - depth, w - width
         float r;
         float t, cellsize;
 
