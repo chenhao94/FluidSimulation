@@ -48,10 +48,11 @@ void GridView::draw()
     for (int i = 0; i < D; ++i)
         for (int j = 0; j < W; ++j)
         {
-            if (gc[getIndex(i, j)].tid < 0)
-                glColor3f(0.5f, 0.5f, 0.5f);
-            else
-                glColor3f(0.f, 0.5f, 0.5f);
+            //if (gc[getIndex(i, j)].tid < 0)
+            //    glColor3f(0.5f, 0.5f, 0.5f);
+            //else
+            //    glColor3f(0.f, 0.5f, 0.5f);
+            glColor3f(gc[getIndex(i, j)].p, 0.f, 0.f);
             drawRectangle(2. * j / W - 1.  , 1. - 2. * i / D,
                     2. * (j + 1) / W - 1., 1. - 2. * (i + 1) / D);
         }
@@ -64,7 +65,8 @@ void GridView::draw()
     for (int i = 1; i < W; ++i)
         drawLine(2. * i / W - 1., -1. ,2. * i / W - 1., 1.);
 
-    glColor3f(0.f, 0.f, 1.f);
+    //glColor3f(0.f, 0.f, 1.f);
+    glColor3f(1.f, 1.f, 1.f);
     for (auto & i : p)
         drawPoint(2. * i.y / cellsize / W - 1., 1. - 2 * i.x / cellsize/ D);
 

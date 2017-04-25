@@ -10,8 +10,8 @@ void Particle::updatePos(float dt, Grid &g)
     const float &cs = g.getCellSize();
     int i = floor(x / cs), j = floor(y / cs);
     auto &cell = g.getGridCell(i, j);
-    auto rx = (x - i * cs) / cs;
-    auto ry = (y - j * cs) / cs;
+    auto rx = 1.;//(x - i * cs) / cs;
+    auto ry = 1.;//(y - j * cs) / cs;
     // update
     x += (g.getGridCell(i + 1, j).ux * (1 - rx) + cell.ux * rx) * dt;
     y += (g.getGridCell(i, j + 1).ux * (1 - ry) + cell.uy * ry) * dt;

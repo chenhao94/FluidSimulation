@@ -46,5 +46,7 @@ class Grid
         std::vector<GridCell> gc;
         static std::vector<int> fluidCells;
         std::vector<Particle> p;
+
+        void advect(float dt);
 };
 
