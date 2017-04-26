@@ -54,7 +54,7 @@ float Grid::step()
     float vmax = 0.0;
     for (int i = 0; i < D * W; ++i)
         vmax = max(vmax, max(fabs(gc[i].ux), fabs(gc[i].uy))); 
-    float dt = 0.1;
+    float dt = 0.01;
     float &h = cellsize;
     if (vmax > h / dt)
         dt = h / vmax;
@@ -140,22 +140,26 @@ void Grid::advect(float dt)
     v0.resize(D * W);
     for (int i = 0; i < D - 1; ++i)
         for (int j = 0; j < W - 1; ++j)
-        {
-            int pos = getIndex(i, j);
-            float x = i * cellsize, y = cellsize;
-            float ux = gc[pos].ux, uy = gc[pos].uy;
-            float cur_p = gc[pos].p;
-            if (i < D - 1)
-                ux += dt * ( g - (gc[getIndex(i + 1, j)].p - cur_p) / r / cellsize);
-            else
-                ux = 0;
-            if (j < W - 1)
-                uy += -dt * (gc[getIndex(i, j + 1)].p - cur_p) / r / cellsize;
-            else
-                uy = 0;
-            int newpos = getIndex((x + ux * dt) / cellsize, (y + uy * dt) / cellsize);
-            v0[newpos] = pair<float, float>(ux, uy);
-        }
+            {
+                int pos = getIndex(i, j);
+                float x = i * cellsize, y = j * cellsize;
+                float ux = gc[pos].ux, uy = gc[pos].uy;
+                float cur_p = gc[pos].p;
+                if (gc[pos].tid < 0 && fabs(ux) < 1e-5 && fabs(ux) < 1e-5)
+                    continue;
+                if (i < D - 1)
+                    ux += dt * ( g - (gc[getIndex(i + 1, j)].p - cur_p) / r / cellsize);
+                else
+                    ux = 0;
+                if (j < W - 1)
+                    uy += -dt * (gc[getIndex(i, j + 1)].p - cur_p) / r / cellsize;
+                else
+                    uy = 0;
+                int newpos = getIndex(floor((x + ux * dt) / cellsize), floor((y + uy * dt) / cellsize));
+                cout << i << " " << j << " " << floor((x + ux * dt) / cellsize) << " " << floor((y + uy * dt) / cellsize) << " " << x << " " << y << " " << ux << " " << uy << " " << dt <<  endl;
+                cout << "newpos: " << newpos << endl;
+                v0[newpos] = pair<float, float>(ux, uy);
+            }
     for (int i = 0; i < v0.size(); ++i)
     {
         gc[i].vx = gc[i].ux;
