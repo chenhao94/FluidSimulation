@@ -37,6 +37,9 @@ class Grid
 
         const std::vector<Particle>& getParticles() const { return p; }
 
+        static float xbound, ybound;
+        static float interpolate(float x, float lx, float rx, float vl, float vr);
+
     protected:
 
         int D, W, particleNum; // d - depth, w - width

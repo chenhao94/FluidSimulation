@@ -2,8 +2,6 @@
 #include "particle.hpp"
 #include "cmath"
 
-float Particle::xbound = 0;
-float Particle::ybound = 0;
 
 void Particle::updatePos(float dt, Grid &g)
 {
@@ -18,12 +16,12 @@ void Particle::updatePos(float dt, Grid &g)
     // check bound
     if (x < 0)
         x = - x;
-    else if (x > xbound)
-        x = 2 * xbound - x;
+    else if (x > Grid::xbound)
+        x = 2 * Grid::xbound - x;
     if (y < 0)
         y = - y;
-    else if (y > ybound)
-        y = 2 * ybound - y;
+    else if (y > Grid::ybound)
+        y = 2 * Grid::ybound - y;
     // mark grid cell as fluid
     g.markFluid(floor(x / cs), floor(y / cs));
 }
