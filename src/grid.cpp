@@ -61,7 +61,7 @@ float Grid::step()
     if (vmax > h / dt)
         dt = h / vmax;
 
-    // advect velocity
+    // advect velocity and pressure
     advect(dt);
 
     // update pressure
@@ -91,6 +91,7 @@ float Grid::step()
                             }
                 A.insert(id, id) = -omega;
                 b(id) = -getDivergence(pos) * r; 
+                std::cerr << "div: " << b(id) << std::endl; 
             }
         }
     Eigen::BiCGSTAB<MatType> solver;
@@ -138,55 +139,103 @@ int Grid::getDivergence(int pos) const
 
 void Grid::advect(float dt)
 {
-    vector<pair<float, float>> v0;
+    vector<pair<float, float>> v0, v;
+    vector<float> p;
     v0.resize(D * W);
+    v.resize(D * W);
+    p.resize(D * W);
     int pos;
-    /*for (int i = 0; i < D - 1; ++i)
-        for (int j = 0; j < W - 1; ++j)
-        if (gc[pos = getIndex(i, j)].tid >= 0)
-        {
-            float cur_p = gc[pos].p;
-            gc[pos].vx = gc[pos].ux;
-            gc[pos].vy = gc[pos].uy;
-            gc[pos].ux += dt * ( g - (gc[getIndex(i + 1, j)].p - cur_p) / r / cellsize);
-            gc[pos].uy += -dt * (gc[getIndex(i, j + 1)].p - cur_p) / r / cellsize;
-            cout << pos << " " << gc[pos].ux << " " << gc[pos].uy << endl;
-        }
-*/
-    for (int i = 0; i < D - 1; ++i)
-        for (int j = 0; j < W - 1; ++j)
+    for (int i = 1; i < D - 1; ++i)
+        for (int j = 1; j < W - 1; ++j)
         {
             pos = getIndex(i, j);
-            float ux = gc[pos].ux, uy = gc[pos].uy;
-            float x = i * cellsize - ux * dt, y = j * cellsize - uy * dt;
-            x = min(max(0.f, x), xbound);
-            y = min(max(0.f, y), ybound);
-            int ni = floor(x / cellsize), nj = floor(y / cellsize);
+            float vx = gc[pos].ux, vy = gc[pos].uy;
+            if (i > 0)
+                vx += gc[getIndex(i-1, j)].ux;
+            if (j > 0)
+                vy += gc[getIndex(i, j-1)].uy;
+            v0[pos] = pair<float, float>(0.5 * vx, 0.5 * vy);
+        }
+    for (int i = 1; i < D - 1; ++i)
+        for (int j = 1; j < W - 1; ++j)
+        {
+            pos = getIndex(i, j);
+            gc[pos].vx = gc[pos].ux;
+            gc[pos].vy = gc[pos].uy;
+            float x = (i + 0.5) * cellsize - v0[pos].first * dt;
+            float y = (j + 0.5) * cellsize - v0[pos].second * dt;
+            x = min(max(0.5f * cellsize, x), xbound - 0.5f * cellsize);
+            y = min(max(0.5f * cellsize, y), ybound - 0.5f * cellsize);
+            int ni = floor(x / cellsize - 0.5), nj = floor(y / cellsize - 0.5);
+            float ux = (ni + 0.5) * cellsize, dx = (ni + 1.5) * cellsize;
+            float ly = (nj + 0.5) * cellsize, ry = (nj + 1.5) * cellsize;
+            int ul = getIndex(ni, nj), ur = getIndex(ni, nj + 1);
+            int dl = getIndex(ni + 1, nj), dr = getIndex(ni + 1, nj + 1);
+            p[pos] = bilinearInterpolate(x, y, ux, ly, dx, ry, gc[ul].p, gc[ur].p, gc[dl].p, gc[dr].p);
+            v[pos] = pair<float, float>(bilinearInterpolate(x, y, ux, ly, dx, ry, gc[ul].ux, gc[ur].ux, gc[dl].ux, gc[dr].ux),
+                                        bilinearInterpolate(x, y, ux, ly, dx, ry, gc[ul].uy, gc[ur].uy, gc[dl].uy, gc[dr].uy));
+        }
 
-            ux = interpolate(x, ni * cellsize, (ni + 1.0) * cellsize, gc[getIndex(ni, nj)].ux, gc[getIndex(ni + 1, nj)].ux);
-            uy = interpolate(y, nj * cellsize, (nj + 1.0) * cellsize, gc[getIndex(ni, nj)].uy, gc[getIndex(ni, nj + 1)].uy);
+    for (int i = 1; i < D - 1; ++i)
+        for (int j = 1; j < W - 1; ++j)
+        {
+            pos = getIndex(i, j);
+            gc[pos].p = p[pos];
+            gc[pos].ux = v[pos].first;
+            gc[pos].uy = v[pos].second;
+            if (i < D - 2)
+                gc[pos].ux += v[getIndex(i + 1, j)].first;
+            if (j < W - 2)
+                gc[pos].uy += v[getIndex(i, j + 1)].second;
+            gc[pos].ux *= 0.5;
+            gc[pos].uy *= 0.5;
+        }
 
+    for (int i = 1; i < D - 1; ++i)
+        for (int j = 1; j < W - 1; ++j)
+        {
+            pos = getIndex(i, j);
             if (gc[pos].tid >= 0)
             {
-                ux = interpolate(x, ni * cellsize, (ni + 1.0) * cellsize, gc[getIndex(ni, nj)].ux, gc[getIndex(ni + 1, nj)].ux);
-                cout << i << " " << j << " " << ni << " " << nj << " " << ux << " " << uy << " ";
-                float cur_p = gc[pos].p;
-                ux += dt * ( g - (gc[getIndex(i + 1, j)].p - cur_p) / r / cellsize);
-                uy += -dt * (gc[getIndex(i, j + 1)].p - cur_p) / r / cellsize;
-                cout << pos << " " << ux << " " << uy << endl;
+                gc[pos].ux += g * dt;
+                if (i == D - 2)
+                    gc[pos].ux = 0;
+                if (j == W - 2)
+                    gc[pos].uy = 0;
+                std::cerr << gc[pos].ux << std::endl;
             }
-
-            v0[pos] = pair<float, float>(ux, uy);
+            else
+                gc[pos].ux = gc[pos].uy = 0;
         }
-    for (int i = 0; i < v0.size(); ++i)
-    {
-        gc[i].ux = v0[i].first;
-        gc[i].uy = v0[i].second;
-    }
+    for (int i = 1; i < D - 1; ++i)
+        for (int j = 1; j < W - 1; ++j)
+        {
+            pos = getIndex(i, j);
+            if (gc[pos].tid < 0)
+            {
+                if (gc[getIndex(i-1, j)].tid >=0)
+                    gc[pos].ux = gc[getIndex(i-1, j)].ux;
+                if (gc[getIndex(i+1, j)].tid >=0)
+                    gc[pos].ux = gc[getIndex(i+1, j)].ux;
+                if (gc[getIndex(i, j-1)].tid >=0)
+                    gc[pos].uy = gc[getIndex(i, j-1)].uy;
+                if (gc[getIndex(i, j+1)].tid >=0)
+                    gc[pos].uy = gc[getIndex(i, j+1)].uy;
+            }
+        }
 }
 
-float Grid::interpolate(float x, float lx, float rx, float vl, float vr)
+float Grid::bilinearInterpolate(float x, float y, float ux, float ly, float dx, float ry, float vul, float vur, float vdl, float vdr)
 {
-    float s = (rx - x) / (rx - lx);
-    return s * vl + (1 - s) * vr;
+    float s = (dx - ux) * (ry - ly);
+    float a = (x - ux) * (y - ly) / s;
+    float b = (dx - x) * (y - ly) / s;
+    float c = (x - ux) * (ry - y) / s;
+    float d = (dx - x) * (ry - y) / s;
+    if (!(a > -1e-4 && b > -1e-4 && c > -1e-4 && d > -1e-4 && fabs(a+b+c+d-1.0) < 1e-4))
+    {
+        std::cerr << "error!" << a << " " << b << " " << c << " " << d <<std::endl;
+        exit(-1);
+    }
+    return vul * d + vur * b + vdl * c + vdr * a;
 }

@@ -38,7 +38,7 @@ class Grid
         const std::vector<Particle>& getParticles() const { return p; }
 
         static float xbound, ybound;
-        static float interpolate(float x, float lx, float rx, float vl, float vr);
+        static float bilinearInterpolate(float x, float y, float ux, float ly, float dx, float ry, float vul, float vur, float vdl, float vdr);
 
     protected:
 

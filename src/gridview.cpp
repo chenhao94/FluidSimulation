@@ -53,7 +53,7 @@ void GridView::draw()
             //else
             //    glColor3f(0.f, 0.5f, 0.5f);
             //glColor3f(gc[getIndex(i, j)].p, 0.f, 0.f);
-            glColor3f(0.f, gc[getIndex(i, j)].ux, 0.f);
+            glColor3f(gc[getIndex(i, j)].p, gc[getIndex(i, j)].ux, 0.f);
             drawRectangle(2. * j / W - 1.  , 1. - 2. * i / D,
                     2. * (j + 1) / W - 1., 1. - 2. * (i + 1) / D);
         }
