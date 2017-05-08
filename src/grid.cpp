@@ -91,18 +91,12 @@ float Grid::step()
                             }
                 A.insert(id, id) = -omega;
                 b(id) = -getDivergence(pos) * r; 
-                std::cerr << "div: " << b(id) << std::endl; 
             }
         }
     Eigen::BiCGSTAB<MatType> solver;
     x = solver.compute(A).solve(b);
-    cout << "pressure: ";
     for (int i = 0; i < fluidCells.size(); ++i)
-    {
         gc[fluidCells[i]].p = x(i);
-        cout << x(i) << ", ";
-    }
-    cout << endl;
 
     // update velocity
     for (int i = 0; i < D; ++i)
@@ -132,9 +126,9 @@ float Grid::step()
     return t;
 }
 
-int Grid::getDivergence(int pos) const
+float Grid::getDivergence(int pos) const
 {
-    return gc[pos + W].ux + gc[pos + 1].uy - gc[pos].ux - gc[pos].uy; 
+    return gc[pos].ux + gc[pos].uy - gc[pos - W].ux - gc[pos - 1].uy; 
 }
 
 void Grid::advect(float dt)
@@ -202,7 +196,6 @@ void Grid::advect(float dt)
                     gc[pos].ux = 0;
                 if (j == W - 2)
                     gc[pos].uy = 0;
-                std::cerr << gc[pos].ux << std::endl;
             }
             else
                 gc[pos].ux = gc[pos].uy = 0;

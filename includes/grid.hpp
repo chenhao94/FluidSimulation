@@ -32,7 +32,7 @@ class Grid
         float step();
 
         int getIndex(int x, int y) const { return x * W + y; }
-        int getDivergence(int pos) const;
+        float getDivergence(int pos) const;
         int getDivergence(int x, int y) const { return getDivergence(getIndex(x ,y)); };
 
         const std::vector<Particle>& getParticles() const { return p; }
