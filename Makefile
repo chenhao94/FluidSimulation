@@ -9,7 +9,7 @@ export TARGETS_DIR = $(DIR)/bin
 export TESTS_DIR = $(DIR)/test
 
 export CXX = g++
-export CXXFLAGS = -std=c++11 -m64 -Wall -g # -O3
+export CXXFLAGS = -std=c++11 -m64 -Wall -g -O3 -fopenmp
 export INCS = -I$(INCS_DIR) -I/usr/include -I/usr/local/include
 export LIBS = -L/usr/local/lib/fltk1.3 -lfltk -lfltk_gl -lfltk_images -lfltk_forms -lXext -lX11 -lGL -lGLU -lm
 export CP = cp -rf

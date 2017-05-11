@@ -103,6 +103,7 @@ float Grid::step()
         gc[fluidCells[i]].p = x(i);
 
     // update velocity
+#pragma omp parallel for 
     for (int i = 1; i < D; ++i)
         for (int j = 1 ; j < W; ++j)
         {
@@ -137,58 +138,58 @@ float Grid::getDivergence(int pos) const
 
 void Grid::advect(float dt)
 {
-    vector<pair<float, float>> v0, v;
-    vector<float> p;
-    v0.resize(D * W);
+    vector<pair<float, float>> v;
     v.resize(D * W);
-    p.resize(D * W);
     int pos;
+#pragma omp parallel for schedule(dynamic,1) collapse(2)
     for (int i = 1; i < D - 1; ++i)
         for (int j = 1; j < W - 1; ++j)
         {
             pos = getIndex(i, j);
-            float vx = gc[pos].ux, vy = gc[pos].uy;
-            if (i > 0)
-                vx += gc[getIndex(i-1, j)].ux;
-            if (j > 0)
-                vy += gc[getIndex(i, j-1)].uy;
-            v0[pos] = pair<float, float>(0.5 * vx, 0.5 * vy);
-        }
-    for (int i = 1; i < D - 1; ++i)
-        for (int j = 1; j < W - 1; ++j)
-        {
-            pos = getIndex(i, j);
-            gc[pos].vx = gc[pos].ux;
-            gc[pos].vy = gc[pos].uy;
-            float x = (i + 0.5) * cellsize - v0[pos].first * dt;
-            float y = (j + 0.5) * cellsize - v0[pos].second * dt;
-            x = min(max(0.5f * cellsize, x), xbound - 0.5f * cellsize);
-            y = min(max(0.5f * cellsize, y), ybound - 0.5f * cellsize);
-            int ni = floor(x / cellsize - 0.5), nj = floor(y / cellsize - 0.5);
-            float ux = (ni + 0.5) * cellsize, dx = (ni + 1.5) * cellsize;
-            float ly = (nj + 0.5) * cellsize, ry = (nj + 1.5) * cellsize;
-            int ul = getIndex(ni, nj), ur = getIndex(ni, nj + 1);
-            int dl = getIndex(ni + 1, nj), dr = getIndex(ni + 1, nj + 1);
-            p[pos] = bilinearInterpolate(x, y, ux, ly, dx, ry, gc[ul].p, gc[ur].p, gc[dl].p, gc[dr].p);
-            v[pos] = pair<float, float>(bilinearInterpolate(x, y, ux, ly, dx, ry, gc[ul].ux, gc[ur].ux, gc[dl].ux, gc[dr].ux),
-                                        bilinearInterpolate(x, y, ux, ly, dx, ry, gc[ul].uy, gc[ur].uy, gc[dl].uy, gc[dr].uy));
+            v[pos] = pair<float, float>(gc[pos].ux, gc[pos].uy);
         }
 
+// cannot be parallelized, o.w. it will become 'sticky'
+//#pragma omp parallel for schedule(dynamic,1) collapse(1)
     for (int i = 1; i < D - 1; ++i)
         for (int j = 1; j < W - 1; ++j)
         {
             pos = getIndex(i, j);
-            gc[pos].p = p[pos];
-            gc[pos].ux = v[pos].first;
-            gc[pos].uy = v[pos].second;
-            if (i < D - 2)
-                gc[pos].ux += v[getIndex(i + 1, j)].first;
-            if (j < W - 2)
-                gc[pos].uy += v[getIndex(i, j + 1)].second;
-            gc[pos].ux *= 0.5;
-            gc[pos].uy *= 0.5;
+            {
+                // --- update ux -------
+                float vx = v[pos].first;
+                float vy = (v[pos].second + v[getIndex(i, j - 1)].second + 
+                        v[getIndex(i + 1, j - 1)].second + v[getIndex(i + 1, j)].second) / 4.;
+                float x = (i + 1.0) * cellsize - vx * dt;
+                float y = (j + 0.5) * cellsize - vy * dt;
+                x = min(max(0.5f * cellsize, x), xbound - 0.5f * cellsize);
+                y = min(max(0.5f * cellsize, y), ybound - 0.5f * cellsize);
+                int ni = floor(x / cellsize), nj = floor(y / cellsize - 0.5);
+                float ux = ni * cellsize, dx = (ni + 1.0) * cellsize;
+                float ly = (nj + 0.5) * cellsize, ry = (nj + 1.5) * cellsize;
+                int ul = getIndex(ni - 1, nj), ur = getIndex(ni - 1, nj + 1);
+                int dl = getIndex(ni, nj), dr = getIndex(ni, nj + 1);
+                gc[pos].ux = bilinearInterpolate(x, y, ux, ly, dx, ry, v[ul].first, v[ur].first, v[dl].first, v[dr].first);
+            }
+            {
+                // --- update uy -------
+                float vx = (v[pos].first + v[getIndex(i, j + 1)].first + 
+                        v[getIndex(i + 1, j)].first + v[getIndex(i + 1, j + 1)].first) / 4.;
+                float vy = v[pos].second;
+                float x = (i + 0.5) * cellsize - vx * dt;
+                float y = (j + 1.0) * cellsize - vy * dt;
+                x = min(max(0.5f * cellsize, x), xbound - 0.5f * cellsize);
+                y = min(max(0.5f * cellsize, y), ybound - 0.5f * cellsize);
+                int ni = floor(x / cellsize - 0.5), nj = floor(y / cellsize);
+                float ux = (ni + 0.5) * cellsize, dx = (ni + 1.5) * cellsize;
+                float ly = nj * cellsize, ry = (nj + 1.0) * cellsize;
+                int ul = getIndex(ni, nj - 1), ur = getIndex(ni, nj);
+                int dl = getIndex(ni + 1, nj - 1), dr = getIndex(ni + 1, nj);
+                gc[pos].uy = bilinearInterpolate(x, y, ux, ly, dx, ry, v[ul].second, v[ur].second, v[dl].second, v[dr].second);
+            }
         }
 
+#pragma omp parallel for schedule(dynamic,1) collapse(2)
     for (int i = 1; i < D - 1; ++i)
         for (int j = 1; j < W - 1; ++j)
         {
@@ -204,6 +205,8 @@ void Grid::advect(float dt)
             else
                 gc[pos].ux = gc[pos].uy = 0;
         }
+
+#pragma omp parallel for schedule(dynamic,1) collapse(2)
     for (int i = 1; i < D - 1; ++i)
         for (int j = 1; j < W - 1; ++j)
         {
