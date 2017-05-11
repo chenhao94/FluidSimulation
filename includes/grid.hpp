@@ -15,7 +15,7 @@ class Grid
 {
     public:
 
-        Grid(int _d, int _w, float cell, float _r = 1000.0, int _p = 2);
+        Grid(int _d, int _w, float cell, float _r = 1000.0, int _p = 5);
 
         int getD() const { return D; }
         int getW() const { return W; }
@@ -42,7 +42,7 @@ class Grid
 
     protected:
 
-        int D, W, particleNum; // d - depth, w - width
+        unsigned D, W, particleNum; // d - depth, w - width
         float r;
         float t, cellsize;
 

@@ -4,7 +4,7 @@
 
 int main()
 {
-    GridView view(20, 20, 0.01, 0.05);
+    GridView view(50, 50, 0.002, 0.05);
     view.show();
     return (Fl::run());
 }

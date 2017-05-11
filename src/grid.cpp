@@ -69,6 +69,7 @@ float Grid::step()
     MatType A(fluidCells.size(), fluidCells.size());
     typedef Eigen::VectorXf VecType;
     VecType b(fluidCells.size()), x;
+    static constexpr int d[4][2] = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
 
     for (int i = 0; i < D - 1; ++i)
         for (int j = 0; j < W - 1; ++j)
@@ -79,18 +80,21 @@ float Grid::step()
             else
             {
                 int omega = 0;
-                for (int k = i-1; k < i+2; k+=2)
-                    if (0 <= k && k < D - 1)
-                        for (int l = j -1; l < j+2; l+=2)
-                            if (0 <= l && l < W - 1)
-                            {
-                                ++omega;
-                                tpos = getIndex(k, l);
-                                if ((tid = gc[tpos].tid) >= 0)
-                                    A.insert(id, tid) = 1;
-                            }
-                A.insert(id, id) = -omega;
-                b(id) = -getDivergence(pos) * r; 
+                for (int k = 0; k < 4; ++k)
+                {
+                    int x = i + d[k][0], y = j + d[k][1];
+                    if (0 < x && x < D - 1 && 0 < y && y < W - 1)
+                    {
+                        ++omega;
+                        tpos = getIndex(x, y);
+                        if ((tid = gc[tpos].tid) >= 0)
+                        {
+                            A.insert(id, tid) = - dt / r / h / h;
+                        }
+                    }
+                }
+                A.insert(id, id) = omega * dt / r / h / h;
+                b(id) = -getDivergence(pos); 
             }
         }
     Eigen::BiCGSTAB<MatType> solver;
@@ -99,17 +103,17 @@ float Grid::step()
         gc[fluidCells[i]].p = x(i);
 
     // update velocity
-    for (int i = 0; i < D; ++i)
-        for (int j = 0 ; j < W; ++j)
+    for (int i = 1; i < D; ++i)
+        for (int j = 1 ; j < W; ++j)
         {
             int pos = getIndex(i, j);
             float cur_p = gc[pos].p;
-            if (i < D - 1)
-                gc[pos].ux += -dt * (gc[getIndex(i + 1, j)].p - cur_p) / r / h;
+            if (i < D - 2)
+                gc[pos].ux -= dt * (gc[getIndex(i + 1, j)].p - cur_p) / r / h;
             else
                 gc[pos].ux = 0;
-            if (j < W - 1)
-                gc[pos].uy += -dt * (gc[getIndex(i, j + 1)].p - cur_p) / r / h;
+            if (j < W - 2)
+                gc[pos].uy -= dt * (gc[getIndex(i, j + 1)].p - cur_p) / r / h;
             else
                 gc[pos].uy = 0;
 
@@ -128,7 +132,7 @@ float Grid::step()
 
 float Grid::getDivergence(int pos) const
 {
-    return gc[pos].ux + gc[pos].uy - gc[pos - W].ux - gc[pos - 1].uy; 
+    return (gc[pos].ux + gc[pos].uy - gc[pos - W].ux - gc[pos - 1].uy) / cellsize; 
 }
 
 void Grid::advect(float dt)
@@ -192,9 +196,9 @@ void Grid::advect(float dt)
             if (gc[pos].tid >= 0)
             {
                 gc[pos].ux += g * dt;
-                if (i == D - 2)
+                if (i == D - 2 && gc[pos].ux > 0)
                     gc[pos].ux = 0;
-                if (j == W - 2)
+                if (j == W - 2 && gc[pos].uy > 0)
                     gc[pos].uy = 0;
             }
             else
