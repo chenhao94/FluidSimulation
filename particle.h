@@ -3,7 +3,7 @@
 
 #include <vector>
 #include "vec.h"
-#include <glm/glm.hpp>
+using namespace std;
 #define MAX_NBR 64
 
 class Particle
@@ -34,15 +34,10 @@ public:
 	Particle* next;
 };
 
-class ParticleNeighbor
-{
-public:
-	ParticleNeighbor(): nbr(MAX_NBR), dis(MAX_NBR), c(0) 
-						{};
-	~ParticleNeighbor();
-	
-	vector<Particle*> nbr;
-	vector<float> dis;
+struct ParticleNeighbor
+{	
+	Particle* nbr[MAX_NBR];
+	float dis[MAX_NBR];
 	int c;
 };
 

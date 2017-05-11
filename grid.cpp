@@ -1,17 +1,20 @@
 #include "grid.h"
+using namespace std;
 
 Grid::Grid(float cell_size, int w, int h)
 {
 	this->cell_size = cell_size;
 	this->grid_width = w;
 	this->grid_height = h;
+	this->count = w * h;
 	grid.clear();
-	grid.resize(w * h);
+	grid.resize(count);
 }
 
-void Grid::update(Water wtr)
+void Grid::update(Water &wtr)
 {
-	grid.clear()
+	grid.clear();
+	grid.resize(count);
 	std::vector<Particle*> pv = wtr.ps;
 
 	for (int i = 0; i < pv.size(); ++i) {
@@ -37,4 +40,5 @@ void Grid::update(Water wtr)
 		pv[i]->g_x = x;
 		pv[i]->g_y = y;
 	}
+	printf("%f, %d, %d, %d, %d\n", cell_size, grid_width, grid_height, pv[0]->g_x, pv[0]->g_y);
 }

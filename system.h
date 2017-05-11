@@ -2,6 +2,7 @@
 #define __PSYSTEM_H__
 
 #include "grid.h"
+#include <vector>
 #include "particle.h"
 
 class PSystem
@@ -16,9 +17,9 @@ public:
 	float height;
 	float kernel;
 	float n_kernel;
-	vector<ParticleNeighbor> pn;
+	ParticleNeighbor pn[5000];
 
-	void simulate(Water &water, float dt);
+	void compute(Water &water, float dt);
 	void gravity(Water &water, float dt);
 	void advect(Water &water, float dt);
 	void bound(Water &water, float dt);

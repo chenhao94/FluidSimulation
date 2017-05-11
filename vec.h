@@ -201,27 +201,25 @@ public:
 	void zeroElements() { memset(n,0,sizeof(T)*2); }
 
 	//---[ Friend Methods ]----------------------
-/* not implemented
-	template <class U> friend T operator *( const Vec3<T>& a, const Vec4<T>& b );
-	template <class U> friend T operator *( const Vec4<T>& b, const Vec3<T>& a );
-	template <class U> friend Vec3<T> operator -( const Vec3<T>& v );
-	template <class U> friend Vec3<T> operator *( const Vec3<T>& a, const double d );
-	template <class U> friend Vec3<T> operator *( const double d, const Vec3<T>& a );
-	template <class U> friend Vec3<T> operator *( const Vec3<T>& v, Mat4<T>& a );
-	template <class U> friend T operator *( const Vec3<T>& a, const Vec3<T>& b );
-	template <class U> friend Vec3<T> operator *( const Mat3<T>& a, const Vec3<T>& v );
-	template <class U> friend Vec3<T> operator *( const Vec3<T>& v, const Mat3<T>& a );
-	template <class U> friend Vec3<T> operator *( const Mat4<T>& a, const Vec3<T>& v );
-	template <class U> friend Vec3<T> operator /( const Vec3<T>& a, const double d );
-	template <class U> friend Vec3<T> operator ^( const Vec3<T>& a, const Vec3<T>& b );
-	template <class U> friend bool operator ==( const Vec3<T>& a, const Vec3<T>& b );
-	template <class U> friend bool operator !=( const Vec3<T>& a, const Vec3<T>& b );
-	template <class U> friend ostream& operator <<( ostream& os, const Vec3<T>& v );
-	template <class U> friend istream& operator >>( istream& is, Vec3<T>& v );
-	template <class U> friend Vec3<T> minimum( const Vec3<T>& a, const Vec3<T>& b );
-	template <class U> friend Vec3<T> maximum( const Vec3<T>& a, const Vec3<T>& b );
-	template <class U> friend Vec3<T> prod( const Vec3<T>& a, const Vec3<T>& b );
-	*/
+	// template <class U> friend T operator *( const Vec3<T>& a, const Vec4<T>& b );
+	// template <class U> friend T operator *( const Vec4<T>& b, const Vec3<T>& a );
+	// template <class U> friend Vec3<T> operator -( const Vec3<T>& v );
+	template <class U> friend Vec2<T> operator *( const Vec2<T>& a, const double d );
+	template <class U> friend Vec2<T> operator *( const double d, const Vec2<T>& a );
+	// template <class U> friend Vec3<T> operator *( const Vec3<T>& v, Mat4<T>& a );
+	template <class U> friend T operator *( const Vec2<T>& a, const Vec2<T>& b );
+	// template <class U> friend Vec3<T> operator *( const Mat3<T>& a, const Vec3<T>& v );
+	// template <class U> friend Vec3<T> operator *( const Vec3<T>& v, const Mat3<T>& a );
+	// template <class U> friend Vec3<T> operator *( const Mat4<T>& a, const Vec3<T>& v );
+	template <class U> friend Vec2<T> operator /( const Vec2<T>& a, const double d );
+	// template <class U> friend Vec3<T> operator ^( const Vec3<T>& a, const Vec3<T>& b );
+	// template <class U> friend bool operator ==( const Vec3<T>& a, const Vec3<T>& b );
+	// template <class U> friend bool operator !=( const Vec3<T>& a, const Vec3<T>& b );
+	// template <class U> friend ostream& operator <<( ostream& os, const Vec3<T>& v );
+	// template <class U> friend istream& operator >>( istream& is, Vec3<T>& v );
+	// template <class U> friend Vec3<T> minimum( const Vec3<T>& a, const Vec3<T>& b );
+	// template <class U> friend Vec3<T> maximum( const Vec3<T>& a, const Vec3<T>& b );
+	// template <class U> friend Vec3<T> prod( const Vec3<T>& a, const Vec3<T>& b );
 };
 
 typedef Vec2<int> Vec2i;
@@ -976,4 +974,23 @@ Vec3<T> vec4to3(Vec4<T> &v) {
 	return Vec3<T>(v[0], v[1], v[2]);
 }
 
+template <class T>
+inline Vec2<T> operator *(const Vec2<T>& a, const double d ) {
+	return Vec2<T>( a[0] * d, a[1] * d);
+}
+
+template <class T>
+inline Vec2<T> operator *(const double d, const Vec2<T>& a) {
+	return a * d;
+}
+
+template <class T>
+inline Vec2<T> operator /(const Vec2<T>& a, const double d) {
+	return Vec2<T>( a[0] / d, a[1] / d);
+}
+
+template <class T>
+inline T operator *(const Vec2<T>& a, const Vec2<T>& b) {
+	return a[0]*b[0] + a[1]*b[1];
+}
 #endif

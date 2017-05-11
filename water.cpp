@@ -1,4 +1,6 @@
 #include "water.h"
+#include <iostream>
+using namespace std;
 
 Water::Water() 
 {
@@ -23,13 +25,13 @@ Water::Water(int max_num)
 	size = 0.05;
 
 	stiffness = 0.08;
-	n_stiffness = 0.1;
+	n_stiffness = 0.01;
 
 	linear_viscosity = 0.5;
 	quadratic_viscosity = 1.0;
 
 	damping = 0.1;
-	static_density = 20.0;
+	static_density = 100.0;
 
 	tension = 0.0004;
 
@@ -42,6 +44,10 @@ void Water::add_particles(std::vector<Particle*> ps_to_add)
 	if (allowd_num <= 0)
 		return;
 	ps.insert(ps.end(), ps_to_add.begin(), ps_to_add.end());
+	for (int i = 0; i < ps.size(); ++i)
+	{
+		cout << ps[i]->pos[0] << "," << ps[i]->pos[1] << endl;
+	}
 }
 
 

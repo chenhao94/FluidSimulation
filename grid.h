@@ -10,13 +10,13 @@ class Grid
 {
 public:
 	Grid(float cell_size, int w, int h);
-	update(Water wtr);
+	void update(Water &wtr);
 	~Grid();
 	
 	float cell_size;
 	int grid_width;
-	int grid_hright;
-	int cell_count;
+	int grid_height;
+	int count;
 	vector<Particle*> grid;
 };
 
