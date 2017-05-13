@@ -44,8 +44,7 @@ void Water::add_particles(std::vector<Particle*> ps_to_add)
 	if (allowd_num <= 0)
 		return;
 	ps.insert(ps.end(), ps_to_add.begin(), ps_to_add.end());
-	for (int i = 0; i < ps.size(); ++i)
-	{
+	for (int i = 0; i < ps.size(); ++i) {
 		cout << ps[i]->pos[0] << "," << ps[i]->pos[1] << endl;
 	}
 }

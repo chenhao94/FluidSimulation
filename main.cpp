@@ -28,21 +28,12 @@ int main(int argc, char const *argv[])
 	}
 	GLFWwindow* window = glfwCreateWindow(640, 400, "Particles", NULL, NULL);
 	cout << window << endl;
-	if (!window) {
-		glfwTerminate();	
-		cout << "Failed to init GLFW\n";
-		return 2;
-	}
+
 	glfwMakeContextCurrent(window);
 	glewExperimental = GL_TRUE;
 	GLenum err = glewInit();
 
-	if(!(err == GL_FALSE)) {
-		cout << "GLEW init failed (Error:" << glewGetErrorString(err) << ")" << endl;
-		return 3;
-	}
 	glClearColor(0.f, 0.f, 0.f, 1.f);
-
 
 	Water * wt = new Water(5000);
 
@@ -53,23 +44,23 @@ int main(int argc, char const *argv[])
 		Particle* p = new Particle();
 		// p->pos[0] = 0.1 * (i % 50);
 		// p->pos[1] = 0.2 * (i / 50);
-		p->pos = Vec2f((float)rand()/RAND_MAX * 6 + 1, (float)rand()/RAND_MAX * 2 + 2);
+		p->pos = Vec2f((float)rand()/RAND_MAX * 8 + 1, (float)rand()/RAND_MAX * 2 + 1);
 		// printf("%f, %f\n", p->pos[0], p->pos[1]);
 		p->prePos = p->pos;
 		p->mass = 0.5f;
-		p->velocity[0] = 0;//(float)rand()/RAND_MAX * 10;
-		p->velocity[1] = 0;//(float)rand()/RAND_MAX * 10;
+		p->velocity = Vec2f(0,0);
 		particles.push_back(p);
 	}
+
 	wt->add_particles(particles);
 	int frame = 0;
+
 	while (!glfwWindowShouldClose(window)) {
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE)) 
 			break;
 		frame++;
 		//sleep(2000);
-		ps->compute(*wt, 0.002);
-		ps->compute(*wt, 0.002);
+		ps->compute(*wt, 0.004);
 		// ps->compute(*wt, 0.002);
 		// break;
 		cout << "frame: " << frame << " (" << wt->ps[0]->pos[0] << ", "<< wt->ps[0]->pos[1]<< endl;
@@ -89,6 +80,7 @@ int main(int argc, char const *argv[])
 		cout << particles.size() << "  " << particles[0]->pos[0] << endl;
 		vector<glm::vec2> positions;
 		vector<glm::vec4> colors;
+
 		for(int i = 0; i < particles.size(); ++i) {
 			Particle* pi = particles[i];
 			//printf("[%f, %f].", pi->pos[0], pi->pos[1]);
@@ -102,7 +94,7 @@ int main(int argc, char const *argv[])
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 
-		glPointSize(16);
+		glPointSize(12);
 
 		glColorPointer(4, GL_FLOAT, sizeof(glm::vec4), &colors[0]);
 		glVertexPointer(2, GL_FLOAT, sizeof(glm::vec2), &positions[0]);
@@ -113,6 +105,23 @@ int main(int argc, char const *argv[])
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+
+		if (frame == 500) {
+			vector<Particle*> drop;
+			for (int i = 0; i < 50; ++i) {
+				cout << "Add [" << i<< "]\n";
+				Particle* p = new Particle();
+
+				p->pos = Vec2f((float)rand()/RAND_MAX * 1 + 4, (float)rand()/RAND_MAX * 1 + 5);
+				// printf("%f, %f\n", p->pos[0], p->pos[1]);
+				p->prePos = p->pos;
+				p->mass = 0.5f;
+				p->velocity = Vec2f(0,0);
+				drop.push_back(p);
+			}
+			wt->add_particles(drop);
+		}
 	}
 
 	glfwTerminate();

@@ -39,6 +39,7 @@ struct ParticleNeighbor
 	Particle* nbr[MAX_NBR];
 	float dis[MAX_NBR];
 	int c;
+	float threshold;
 };
 
 
