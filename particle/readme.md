@@ -20,7 +20,7 @@ The concept of simulation with particles is similar to the particle system. Here
 
 ## Artifacts
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/Xnz5Ma3nVU0" frameborder="0" allowfullscreen></iframe>
+[![watch the video](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/particle/img/f1.png)](https://www.youtube.com/embed/Xnz5Ma3nVU0)
 
 ## Reference
 
