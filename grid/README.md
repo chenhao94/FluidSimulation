@@ -10,7 +10,7 @@ In grid-based simulation, we monitor the parameters (velocity and pressure) on t
 
 We ignore the viscocity, and assume gravity is the only external force, then
 
-![equation](http://www.sciweavers.org/tex2img.php?eq=%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%20%3D%20g%20-%20%5Cfrac%7B%5Cbigtriangledown%20p%7D%7B%5Crho%7D&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
+![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f0.png)
 
 [//]: \frac{\partial u}{\partial t}  = g - \frac{\bigtriangledown p}{\rho}
 
@@ -29,13 +29,9 @@ Then we can apply gravity to the new field.
 
 ## Solving the Equations
 
-After updating the velocity, we got *u**. It may violate the incompressible condition: \bigdowntriangle\cdot u = 0. The new pressure values are here to fix it.
+After updating the velocity, we got *u**. It may violate the incompressible condition: ![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f0.5.png). The new pressure values are here to fix it.
 
-[//]: \frac{u^*-u_{old}}{\Delta t}  = g - \frac{\bigtriangledown p}{\rho}
-
-![equation](http://www.sciweavers.org/tex2img.php?eq=%5Cbigtriangledown%20%5Ccdot%20u%5E%2A%20%3D%20%5Cfrac%7B%5CDelta%20t%7D%7B%5Crho%7D%5CDelta%20p%20&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
-
-[//]: \bigtriangledown \cdot u^* = \frac{\Delta t}{\rho}\Delta p 
+![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f1.png)
 
 The boundary conditions are:
 
@@ -44,9 +40,7 @@ The boundary conditions are:
 
 Then we can solve the pressure can update the velocity:
 
-![equation](http://www.sciweavers.org/tex2img.php?eq=u%20%20%3D%20u%5E%2A%20-%20%5Cfrac%7B%5CDelta%20t%20%5Cbigtriangledown%20p%7D%7B%5Crho%7D&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
-
-[//]: u  = u^* - \frac{\Delta t \bigtriangledown p}{\rho}
+![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f2.png)
 
 ## Marker Particles
 
@@ -62,6 +56,11 @@ We use the *marker particles* to mark whether a cell is fluid or air. In this ca
         update_particles();
         
 ## Artifact
+
+![](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/a1.png =50x50)
+
+![](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/a2.png =50x50)
+
 
 ## References
 
