@@ -4,15 +4,9 @@ In grid-based simulation, we monitor the parameters (velocity and pressure) on t
 
 ## Imcompressible Navier–Stokes Equations
 
-[//]: ![equation](http://bit.ly/2qE93fN)
-
-[//]: ![equation](http://bit.ly/2qEh0BD)
-
 We ignore the viscocity, and assume gravity is the only external force, then
 
 ![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f0.png)
-
-[//]: \frac{\partial u}{\partial t}  = g - \frac{\bigtriangledown p}{\rho}
 
 Thus, if we know the pressure of each cell, we can use it to update the velocity field.
 
