@@ -51,10 +51,9 @@ We use the *marker particles* to mark whether a cell is fluid or air. In this ca
         
 ## Artifact
 
-![](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/a1.png =50x50)
+<img src="https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/a1.png", width="500", height="500">
 
-![](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/a2.png =50x50)
-
+<img src="https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/a2.png", width="500", height="500">
 
 ## References
 
