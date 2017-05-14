@@ -23,7 +23,7 @@ Then we can apply gravity to the new field.
 
 ## Solving the Equations
 
-After updating the velocity, we got *u**. It may violate the incompressible condition: ![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f0.5.png). The new pressure values are here to fix it.
+After updating the velocity, we got *u**. It may violate the incompressible condition: ![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f0_5.png). The new pressure values are here to fix it.
 
 ![equation](https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/f1.png)
 
