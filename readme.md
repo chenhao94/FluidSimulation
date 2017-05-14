@@ -79,9 +79,9 @@ The concept of simulation with particles is similar to the particle system. Here
 
 <img src="https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/grid/img/a2.png" width="500" height="500">
 
-<img src="https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/particle/img/f1.png" width="500" height="500">
+<img src="https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/particle/img/f1.png" width="1440" height="960">
 
-<img src="https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/particle/img/f2.png" width="500" height="500">
+<img src="https://raw.githubusercontent.com/chenhao94/FluidSimulation/master/particle/img/f2.png" width="1440" height="960">
 
 ## References
 
