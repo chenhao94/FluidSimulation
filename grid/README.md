@@ -8,7 +8,7 @@ In grid-based simulation, we monitor the parameters (velocity and pressure) on t
 
 [//]: ![equation](http://bit.ly/2qEh0BD)
 
-We ignore the viscocity, and assume gravity is the only external force, then the first formula become
+We ignore the viscocity, and assume gravity is the only external force, then
 
 ![equation](http://www.sciweavers.org/tex2img.php?eq=%5Cfrac%7B%5Cpartial%20u%7D%7B%5Cpartial%20t%7D%20%20%3D%20g%20-%20%5Cfrac%7B%5Cbigtriangledown%20p%7D%7B%5Crho%7D&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
 
