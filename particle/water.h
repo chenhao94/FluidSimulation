@@ -15,8 +15,6 @@ public:
 	~Water();
 
 	float size;
-	float p_mass;
-
 	float stiffness;
 	float n_stiffness;
 

@@ -11,7 +11,7 @@ class Particle
 public:
 	Particle() : pos(Vec2f(0,0)), prePos(Vec2f(0,0)), relPos(Vec2f(0,0)),
 				velocity(Vec2f(0,0)), pressure(0), n_pressure(0),
-				density(0), n_density(0), mass(0), g_x(0), g_y(0)
+				density(0), n_density(0), mass(0.5), g_x(0), g_y(0)
 				{};
 	~Particle();
 

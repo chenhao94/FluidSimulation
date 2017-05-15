@@ -2,6 +2,11 @@
 #include <cstdio>
 #define PI 3.1415926
 
+float viscosity_inpulse(float lv, float qv, float v2)
+{
+	return lv * v2 + qv * v2 * v2;
+}
+
 
 PSystem::PSystem(float size, int w, int h, int win_w, int win_h)
 {
@@ -131,7 +136,7 @@ void PSystem::relax_pos(Water &water, float dt)
 				if (v2 > 0) {
 					v2 /= r;
 					float f = 0.5 * dt * co;
-					f *= (water.linear_viscosity * v2 + water.quadratic_viscosity * v2 * v2);
+					f *= viscosity_inpulse(water.linear_viscosity, water.quadratic_viscosity, v2);
 					dxy *= (f * dt);
 					r_pos -= dxy;
 					// if (j == 0) cout <<"2nd cut: "<< r_pos[0] << "," << r_pos[1] << endl;

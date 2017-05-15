@@ -31,7 +31,7 @@ int main(int argc, char const *argv[])
 
 	glfwMakeContextCurrent(window);
 	glewExperimental = GL_TRUE;
-	GLenum err = glewInit();
+	glewInit();
 
 	glClearColor(0.f, 0.f, 0.f, 1.f);
 
@@ -39,12 +39,10 @@ int main(int argc, char const *argv[])
 
 	PSystem * ps = new PSystem(0.3, 10.0/0.3,  5.0/ 0.3, 10.0, 5.0);
 	vector<Particle*> particles;
-	for (int i = 0; i < 1500; ++i) {
+	for (int i = 0; i < 2500; ++i) {
 		cout << "Add [" << i<< "]\n";
 		Particle* p = new Particle();
-		// p->pos[0] = 0.1 * (i % 50);
-		// p->pos[1] = 0.2 * (i / 50);
-		p->pos = Vec2f((float)rand()/RAND_MAX * 8 + 1, (float)rand()/RAND_MAX * 2 + 1);
+		p->pos = Vec2f((float)rand()/RAND_MAX * 8 + 1, (float)rand()/RAND_MAX * 3 + 2);
 		// printf("%f, %f\n", p->pos[0], p->pos[1]);
 		p->prePos = p->pos;
 		p->mass = 0.5f;
@@ -72,7 +70,7 @@ int main(int argc, char const *argv[])
 		glLoadIdentity();
 		glOrtho(0, 10, 0, 5, 0, 1);
 
-		glEnable(GL_POINT_SMOOTH);
+		// glEnable(GL_POINT_SMOOTH);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -88,13 +86,13 @@ int main(int argc, char const *argv[])
 			positions.push_back(glm::vec2(pi->pos[0], pi->pos[1]));
 			glm::vec2 sd = glm::normalize(glm::vec2(pi->velocity[0], pi->velocity[1]));
 			// colors.push_back(glm::vec4(sd, 1.f, 0.8f));
-			colors.push_back(glm::vec4(0.2, 0.5, 1.f, 0.8f));
+			colors.push_back(glm::vec4(0.3, 0.5, 1.f, 0.8f));
 		}
 
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 
-		glPointSize(12);
+		glPointSize(30);
 
 		glColorPointer(4, GL_FLOAT, sizeof(glm::vec4), &colors[0]);
 		glVertexPointer(2, GL_FLOAT, sizeof(glm::vec2), &positions[0]);
@@ -107,13 +105,13 @@ int main(int argc, char const *argv[])
 		glfwPollEvents();
 
 
-		if (frame == 500) {
+		if (frame == 800) {
 			vector<Particle*> drop;
-			for (int i = 0; i < 50; ++i) {
+			for (int i = 0; i < 40; ++i) {
 				cout << "Add [" << i<< "]\n";
 				Particle* p = new Particle();
 
-				p->pos = Vec2f((float)rand()/RAND_MAX * 1 + 4, (float)rand()/RAND_MAX * 1 + 5);
+				p->pos = Vec2f((float)rand()/RAND_MAX * 0.6 + 4, (float)rand()/RAND_MAX * 0.6 + 4);
 				// printf("%f, %f\n", p->pos[0], p->pos[1]);
 				p->prePos = p->pos;
 				p->mass = 0.5f;
